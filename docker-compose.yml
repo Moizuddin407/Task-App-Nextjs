@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    image: myapp:latest
+    build:
+      context: ./task-app-frontend
+      # Use Dockerfile.yaml for the frontend service
+      dockerfile: Dockerfile.yaml
+    ports:
+      - "8080:3000"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./app:/usr/src/app
+    networks:
+      - mynetwork
+    depends_on:
+      - backend
+
+  backend:
+    image: mybackend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.yaml
+    ports:
+      - "5000:5000"
+    environment:
+      - BACKEND_ENV=production
+    volumes:
+      - ./backend:/usr/src/backend
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
+
